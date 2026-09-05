@@ -22,6 +22,12 @@
         public function getUtilisateur($id)
         {
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM utilisateur WHERE utilisateur_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
 
@@ -29,6 +35,23 @@
 
 
             return mysqli_fetch_assoc($result);
+        }
+
+        public function getUtilisateurByEmail($email){
+            $stmt = mysqli_prepare($this->conn, "SELECT * FROM utilisateur WHERE email = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "s", $email);
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            return mysqli_fetch_assoc($result);
+
         }
 
         public function getAllUtilisateurs(){
@@ -39,7 +62,7 @@
             return mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
 
-        public function createUtilisateur($data)
+        public function creerUtilisateur($data)
         {
             if(!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
                 return false;
@@ -48,6 +71,12 @@
             $mot_de_passe_hash = password_hash($data['mot_de_passe'], PASSWORD_DEFAULT);
 
             $stmt = mysqli_prepare($this->conn, "INSERT INTO utilisateur(prenom, nom, email, mot_de_passe, role) VALUES(?, ?, ?, ?, ?)");
+            
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+            
             mysqli_stmt_bind_param($stmt, 'sssss', $data['prenom'], $data['nom'], $data['email'], $mot_de_passe_hash, $data['role']);
             mysqli_stmt_execute($stmt);
 
@@ -58,6 +87,11 @@
         public function updateUtilisateur($id, $data){
             $stmt = mysqli_prepare($this->conn, "UPDATE utilisateur SET prenom = ?, nom = ?, email = ? WHERE utilisateur_id  = ?");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "sssi", $data['prenom'], $data['nom'], $data['email'], $id);
             return mysqli_stmt_execute($stmt);
             
@@ -66,6 +100,11 @@
         public function supprimerUtilisateur($id){
             $stmt = mysqli_prepare($this->conn, "DELETE FROM utilisateur WHERE utilisateur_id = ?");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "i", $id);
             return mysqli_stmt_execute($stmt);
         }
@@ -73,6 +112,11 @@
         // cours table
         public function getCours($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM cours WHERE cours_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -93,6 +137,11 @@
         public function creerCours($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO cours(cours_titre, description, formateur_id, categorie_id) VALUES(?, ?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "ssii", $data['titre'], $data['description'], $data['formateur_id'], $data['categorie_id']);
             mysqli_stmt_execute($stmt);
 
@@ -103,6 +152,11 @@
         public function updateCours($id, $data){
             $stmt = mysqli_prepare($this->conn, "UPDATE cours SET cours_titre = ?, description = ?, formateur_id = ?, categorie_id = ? WHERE cours_id = ?");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "ssiii", $data['titre'], $data['description'], $data['formateur_id'], $data['categorie_id'], $id);
             return mysqli_stmt_execute($stmt);
         }
@@ -110,6 +164,11 @@
         public function supprimerCours($id){
             $stmt = mysqli_prepare($this->conn, "DELETE FROM cours WHERE cours_id = ?");
         
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "i", $id);
             return mysqli_stmt_execute($stmt);    
         }
@@ -117,6 +176,11 @@
         // categorie table
         public function getCategorie($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM categorie WHERE categorie_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -137,12 +201,24 @@
         public function creerCategorie($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO categorie(categorie_nom) VALUES(?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "s", $data['categorie_nom']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
         public function updateCategorie($id, $data){
             $stmt = mysqli_prepare($this->conn, "UPDATE categorie SET categorie_nom = ? WHERE categorie_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "si", $data['categorie_nom'], $id);
             return mysqli_stmt_execute($stmt);
@@ -150,6 +226,11 @@
 
         public function supprimerCategorie($id){
             $stmt = mysqli_prepare($this->conn, "DELETE FROM categorie WHERE categorie_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             return mysqli_stmt_execute($stmt);
@@ -159,6 +240,11 @@
         // lecon table
         public function getLecon($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM lecon WHERE lecon_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -179,19 +265,36 @@
         public function creerLecon($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO lecon(cours_id, lecon_titre, lecon_order) VALUES(?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "isi", $data['cours_id'], $data['lecon_titre'], $data['lecon_order']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
         public function updateLecon($id, $data){
-            $stmt = mysqli_prepare($this->conn, "UPDATE lecon SET cours_id = ?, lecon_titre = ?, lecon_order = ? WHERE lecon_id = ?");
+            $stmt = mysqli_prepare($this->conn, "UPDATE lecon SET lecon_titre = ?, lecon_order = ? WHERE lecon_id = ?");
 
-            mysqli_stmt_bind_param($stmt, "isii", $data['cours_id'], $data['lecon_titre'], $data['lecon_order'], $id);
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "sii", $data['lecon_titre'], $data['lecon_order'], $id);
             return mysqli_stmt_execute($stmt);
         }
 
         public function supprimerLecon($id){
             $stmt = mysqli_prepare($this->conn, "DELETE FROM lecon WHERE lecon_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             return mysqli_stmt_execute($stmt);
@@ -201,6 +304,11 @@
         // exercice table
         public function getExercice($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM exercice WHERE exercice_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -221,19 +329,25 @@
         public function creerExercice($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO exercice(cours_id, lecon_id, exercice_titre) VALUES(?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "iis", $data['cours_id'], $data['lecon_id'], $data['exercice_titre']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
-        public function updateExercice($id, $data){
-            $stmt = mysqli_prepare($this->conn, "UPDATE exercice SET cours_id = ?, lecon_id = ?, exercice_titre = ? WHERE exercice_id = ?");
-
-            mysqli_stmt_bind_param($stmt, "iisi", $data['cours_id'], $data['lecon_id'], $data['exercice_titre'], $id);
-            return mysqli_stmt_execute($stmt);
-        }
 
         public function supprimerExercice($id){
             $stmt = mysqli_prepare($this->conn, "DELETE FROM exercice WHERE exercice_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             return mysqli_stmt_execute($stmt);
@@ -243,6 +357,11 @@
         // question table
         public function getQuestion($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM question WHERE question_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -263,19 +382,36 @@
         public function creerQuestion($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO question(exercice_id, texte_question, question_type) VALUES(?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "iss", $data['exercice_id'], $data['texte_question'], $data['question_type']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
         public function updateQuestion($id, $data){
-            $stmt = mysqli_prepare($this->conn, "UPDATE question SET exercice_id = ?, texte_question = ?, question_type = ? WHERE question_id = ?");
+            $stmt = mysqli_prepare($this->conn, "UPDATE question SET texte_question = ?, question_type = ? WHERE question_id = ?");
 
-            mysqli_stmt_bind_param($stmt, "issi", $data['exercice_id'], $data['texte_question'], $data['question_type'], $id);
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "ssi", $data['texte_question'], $data['question_type'], $id);
             return mysqli_stmt_execute($stmt);
         }
 
         public function supprimerQuestion($id){
             $stmt = mysqli_prepare($this->conn, "DELETE FROM question WHERE question_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             return mysqli_stmt_execute($stmt);
@@ -285,6 +421,11 @@
         // choix table
         public function getChoix($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM choix WHERE choix_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -305,19 +446,36 @@
         public function creerChoix($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO choix(question_id, texte_choix, est_correct) VALUES(?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "isi", $data['question_id'], $data['texte_choix'], $data['est_correct']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
         public function updateChoix($id, $data){
-            $stmt = mysqli_prepare($this->conn, "UPDATE choix SET question_id = ?, texte_choix = ?, est_correct = ? WHERE choix_id = ?");
+            $stmt = mysqli_prepare($this->conn, "UPDATE choix SET texte_choix = ?, est_correct = ? WHERE choix_id = ?");
 
-            mysqli_stmt_bind_param($stmt, "isii", $data['question_id'], $data['texte_choix'], $data['est_correct'], $id);
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "sii", $data['texte_choix'], $data['est_correct'], $id);
             return mysqli_stmt_execute($stmt);
         }
 
         public function supprimerChoix($id){
             $stmt = mysqli_prepare($this->conn, "DELETE FROM choix WHERE choix_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             return mysqli_stmt_execute($stmt);
@@ -327,6 +485,11 @@
         // inscription table
         public function getInscription($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM inscription WHERE inscription_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -347,12 +510,24 @@
         public function creerInscription($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO inscription(etudiant_id, cours_id, note_finale) VALUES(?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "iid", $data['etudiant_id'], $data['cours_id'], $data['note_finale']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
         public function supprimerInscription($id){
             $stmt = mysqli_prepare($this->conn, "DELETE FROM inscription WHERE inscription_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             return mysqli_stmt_execute($stmt);
@@ -362,6 +537,11 @@
         // soumission table
         public function getSoumission($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM soumission WHERE soumission_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -383,12 +563,24 @@
         public function creerSoumission($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO soumission(etudiant_id, question_id, soumission_reponse, url_fichier, soumis_le, note) VALUES(?, ?, ?, ?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "iisssd", $data['etudiant_id'], $data['question_id'], $data['soumission_reponse'], $data['url_fichier'], $data['soumis_le'], $data['note']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
         public function updateSoumission($id, $data){
             $stmt = mysqli_prepare($this->conn, "UPDATE soumission SET note = ?, commentaire = ?, corrige_le = ?, corrige_par = ? WHERE soumission_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "dssii", $data['note'], $data['commentaire'], $data['corrige_le'], $data['corrige_par'], $id);
             return mysqli_stmt_execute($stmt);
@@ -399,6 +591,10 @@
         public function getProgression($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM progression WHERE progression_id = ?");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
 
@@ -418,12 +614,24 @@
         public function creerProgression($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO progression(etudiant_id, cours_id, complete_le, derniere_lecon_id, modifie_le) VALUES(?, ?, ?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "iisis", $data['etudiant_id'], $data['cours_id'], $data['complete_le'], $data['derniere_lecon_id'], $data['modifie_le']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
         public function updateProgression($id, $data){
             $stmt = mysqli_prepare($this->conn, "UPDATE progression SET etudiant_id = ?, cours_id = ?, complete_le = ?, derniere_lecon_id = ?, modifie_le = ? WHERE progression_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "iisisi", $data['etudiant_id'], $data['cours_id'], $data['complete_le'], $data['derniere_lecon_id'], $data['modifie_le'], $id);
             return mysqli_stmt_execute($stmt);
@@ -433,6 +641,11 @@
         // progressionLecon table
         public function getProgressionLecon($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM progression_lecon WHERE progression_lecon_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -453,14 +666,26 @@
         public function creerProgressionLecon($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO progression_lecon(cours_id, lecon_id, etudiant_id, complete_le) VALUES(?, ?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "iiis", $data['cours_id'], $data['lecon_id'], $data['etudiant_id'], $data['complete_le']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
 
         // leconTexte table
         public function getLeconTexte($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM lecon_texte WHERE texte_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -481,14 +706,26 @@
         public function creerLeconTexte($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO lecon_texte(lecon_id, cours_id, contenu_texte, texte_order) VALUES(?, ?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "iisi", $data['lecon_id'], $data['cours_id'], $data['contenu_texte'], $data['texte_order']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
 
         // leconPDF table
         public function getLeconPdf($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM lecon_pdf WHERE pdf_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -509,14 +746,26 @@
         public function creerLeconPdf($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO lecon_pdf(lecon_id, cours_id, url_pdf, pdf_order) VALUES(?, ?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
             mysqli_stmt_bind_param($stmt, "iisi", $data['lecon_id'], $data['cours_id'], $data['url_pdf'], $data['pdf_order']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
 
 
         // leconPDF table
         public function getLeconVideo($id){
             $stmt = mysqli_prepare($this->conn, "SELECT * FROM lecon_video WHERE video_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
 
             mysqli_stmt_bind_param($stmt, "i", $id);
             mysqli_stmt_execute($stmt);
@@ -537,8 +786,15 @@
         public function creerLeconVideo($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO lecon_video(lecon_id, cours_id, url_video, video_order) VALUES(?, ?, ?, ?)");
 
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+            
             mysqli_stmt_bind_param($stmt, "iisi", $data['lecon_id'], $data['cours_id'], $data['url_video'], $data['video_order']);
-            return mysqli_stmt_execute($stmt);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
         }
     }
 
