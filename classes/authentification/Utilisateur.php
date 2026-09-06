@@ -9,11 +9,11 @@
         private $cree_le;
 
 
-        public function setUserId($id) {
+        public function setUtilisateurId($id) {
             $this->id = $id;
         }
 
-        public function getUserId() {
+        public function getUtilisateurId() {
             return $this->id;
         }
 

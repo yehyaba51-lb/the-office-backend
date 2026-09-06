@@ -1,0 +1,96 @@
+<?php
+    require_once('BaseDeDonnee.php');
+
+    class LeconModel{
+        private $conn;
+
+        public function __construct(BaseDeDonnee $db){
+            $this->conn = $db->getConn();
+        }
+
+        // lecon table
+        public function getLecon($id){
+            $stmt = mysqli_prepare($this->conn, "SELECT * FROM lecon WHERE lecon_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "i", $id);
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            return mysqli_fetch_assoc($result);
+        }
+
+        public function getAllLecons(){
+            $query = "SELECT * FROM lecon";
+
+            $result = mysqli_query($this->conn, $query);
+
+            if (!$result) {
+                error_log('Query failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            return mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+
+        public function getLeconsByCours($cours_id){
+            $stmt = mysqli_prepare($this->conn, "SELECT * FROM lecons WHERE cours_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "i", $cours_id);
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        }
+
+        public function creerLecon($data){
+            $stmt = mysqli_prepare($this->conn, "INSERT INTO lecon(cours_id, lecon_titre, lecon_order) VALUES(?, ?, ?)");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "isi", $data['cours_id'], $data['lecon_titre'], $data['lecon_order']);
+            mysqli_stmt_execute($stmt);
+
+            return mysqli_insert_id($this->conn);
+        }
+
+        public function updateLecon($id, $data){
+            $stmt = mysqli_prepare($this->conn, "UPDATE lecon SET lecon_titre = ?, lecon_order = ? WHERE lecon_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "sii", $data['lecon_titre'], $data['lecon_order'], $id);
+            return mysqli_stmt_execute($stmt);
+        }
+
+        public function supprimerLecon($id){
+            $stmt = mysqli_prepare($this->conn, "DELETE FROM lecon WHERE lecon_id = ?");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "i", $id);
+            return mysqli_stmt_execute($stmt);
+        }
+
+    }

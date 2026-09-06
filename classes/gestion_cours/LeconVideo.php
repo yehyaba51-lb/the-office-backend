@@ -4,6 +4,7 @@
     class LeconVideo extends ContenuLecon{
         private $video_id;
         private $url_video;
+        private $video_ordre;
         private $duree;
 
 
@@ -25,6 +26,14 @@
 
         public function setUrlVideo($url_video){
             $this->url_video = $url_video;
+        }
+
+        public function getVideoOrdre(){
+            return $this->video_ordre;
+        }
+
+        public function setVideoOrdre($video_ordre){
+            $this->video_ordre = $video_ordre;
         }
 
         public function getDuree(){

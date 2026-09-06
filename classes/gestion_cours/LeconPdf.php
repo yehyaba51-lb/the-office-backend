@@ -4,6 +4,7 @@
     class LeconPdf extends ContenuLecon{
         private $pdf_id;
         private $url_pdf;
+        private $pdf_ordre;
 
         public function afficherContenu(){
 
@@ -23,6 +24,14 @@
 
         public function setUrlPdf($url_pdf){
             $this->url_pdf = $url_pdf;
+        }
+
+        public function getPdfOrdre(){
+            return $this->pdf_ordre;
+        }
+
+        public function setPdfOrdre($pdf_ordre){
+            $this->pdf_ordre = $pdf_ordre;
         }
 
     }

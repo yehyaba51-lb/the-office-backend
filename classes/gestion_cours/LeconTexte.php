@@ -4,6 +4,7 @@
     class LeconTexte extends ContenuLecon{
         private $texte_id;
         private $contenu_texte;
+        private $texte_ordre;
 
 
         public function afficherContenu(){
@@ -24,6 +25,14 @@
 
         public function setContenuTexte($contenu_texte){
             $this->contenu_texte = $contenu_texte;
+        }
+
+        public function getTexteOrdre(){
+            return $this->texte_ordre;
+        }
+
+        public function setTexteOrdre($texte_ordre){
+            $this->texte_ordre = $texte_ordre;
         }
 
     }

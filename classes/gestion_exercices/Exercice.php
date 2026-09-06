@@ -2,10 +2,10 @@
     require_once('ExerciceManager.php');
 
     class Exercice{
-        private $exercise_id;
+        private $exercice_id;
         private $lecon_id;
         private $cours_id;
-        private $exercise_titre;
+        private $exercice_titre;
         private $manager;
 
         public function __construct(){
@@ -13,12 +13,12 @@
         }
 
 
-        public function getExerciseId(){
-            return $this->exercise_id;
+        public function getExerciceId(){
+            return $this->exercice_id;
         }
 
-        public function setExerciseId($exercise_id){
-            $this->exercise_id = $exercise_id;
+        public function setExerciceId($exercice_id){
+            $this->exercice_id = $exercice_id;
         }
 
         public function getLeconId(){
@@ -38,11 +38,11 @@
         }
 
         public function getTitre(){
-            return $this->exercise_titre;
+            return $this->exercice_titre;
         }
 
-        public function setTitre($exercise_titre){
-            $this->exercise_titre = $exercise_titre;
+        public function setTitre($exercice_titre){
+            $this->exercice_titre = $exercice_titre;
         }
 
         public function estDeverrouille(){

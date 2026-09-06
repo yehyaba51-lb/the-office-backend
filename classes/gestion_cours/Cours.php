@@ -8,11 +8,11 @@
         private $cree_le;
         private $url_image;
 
-        public function getCourseId(){
+        public function getCoursId(){
             return $this->cours_id;
         }
 
-        public function setCourseId($cours_id){
+        public function setCoursId($cours_id){
             $this->cours_id = $cours_id;
         }
 
