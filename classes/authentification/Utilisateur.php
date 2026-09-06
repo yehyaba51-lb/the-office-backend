@@ -9,6 +9,10 @@
         private $cree_le;
 
 
+        public function setUserId($id) {
+            $this->id = $id;
+        }
+
         public function getUserId() {
             return $this->id;
         }
@@ -39,6 +43,10 @@
         }
         public function setRole($role) {
             $this->role = $role;
+        }
+
+        public function setCreeLe($cree_le) {
+            $this->cree_le = $cree_le;
         }
 
         public function getCreeLe() {
