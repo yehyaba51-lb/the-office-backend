@@ -1,6 +1,6 @@
 <?php
     class Utilisateur {
-        private $id;
+        private $utilisateur_id;
         private $prenom;
         private $nom;
         private $email;
@@ -9,12 +9,12 @@
         private $cree_le;
 
 
-        public function setUtilisateurId($id) {
-            $this->id = $id;
+        public function setUtilisateurId($utilisateur_id) {
+            $this->utilisateur_id = $utilisateur_id;
         }
 
         public function getUtilisateurId() {
-            return $this->id;
+            return $this->utilisateur_id;
         }
 
         public function getPrenom() {
