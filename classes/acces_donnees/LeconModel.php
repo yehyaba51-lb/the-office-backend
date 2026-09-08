@@ -39,7 +39,7 @@
         }
 
         public function getLeconsByCours($cours_id){
-            $stmt = mysqli_prepare($this->conn, "SELECT * FROM lecons WHERE cours_id = ?");
+            $stmt = mysqli_prepare($this->conn, "SELECT * FROM lecon WHERE cours_id = ?");
 
             if (!$stmt) {
                 error_log('Prepare failed: ' . mysqli_error($this->conn));

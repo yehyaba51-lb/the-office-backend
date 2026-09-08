@@ -38,6 +38,26 @@
             return mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
 
+        public function getQuestionsByExercice($exercice_id){
+            $stmt = mysqli_prepare($this->conn, 
+                "SELECT *
+                FROM question
+                WHERE exercice_id = ?"
+            );
+
+            if(!$stmt){
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "i", $exercice_id);
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            return mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+
         public function creerQuestion($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO question(exercice_id, texte_question, question_type) VALUES(?, ?, ?)");
 

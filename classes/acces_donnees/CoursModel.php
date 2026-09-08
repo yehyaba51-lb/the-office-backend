@@ -39,6 +39,11 @@ class CoursModel
 
         $result = mysqli_query($this->conn, $query);
 
+        if(!$result){
+            error_log('Query failed'. mysqli_error($this->conn));
+            return false;
+        }
+
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
 
@@ -144,7 +149,7 @@ class CoursModel
             return false;
         }
 
-        mysqli_stmt_bind_param($stmt, "ssiii", $data['titre'], $data['description'], $data['formateur_id'], $data['categorie_id'], $id);
+        mysqli_stmt_bind_param($stmt, "ssiii", $data['cours_titre'], $data['description'], $data['formateur_id'], $data['categorie_id'], $id);
         return mysqli_stmt_execute($stmt);
     }
 
