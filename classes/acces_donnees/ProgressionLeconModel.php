@@ -39,6 +39,28 @@
             return mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
 
+        public function getProgressionByLeconEtudiant($etudiant_id, $cours_id, $lecon_id){
+            $stmt = mysqli_prepare($this->conn, 
+            "SELECT *
+            FROM progression_lecon
+            WHERE etudiant_id = ?
+            AND cours_id = ?
+            AND lecon_id = ?");
+
+            if(!$stmt){
+                error_log('Prepare failed' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "iii", $etudiant_id, $cours_id, $lecon_id);
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            return mysqli_fetch_assoc($result);
+        }
+
+
         public function creerProgressionLecon($data){
             $stmt = mysqli_prepare($this->conn, "INSERT INTO progression_lecon(cours_id, lecon_id, etudiant_id, complete_le) VALUES(?, ?, ?, ?)");
 

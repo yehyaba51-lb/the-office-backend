@@ -5,6 +5,7 @@
         private $cours_id;
         private $lecon_id;
         private $complete_le;
+        private $status;
 
         public function getProgressionLeconId(){
             return $this->progression_lecon_id;
@@ -43,6 +44,14 @@
         }
 
         public function setCompleteLe($complete_le){
+            $this->complete_le = $complete_le;
+        }
+
+        public function getStatus(){
+            return $this->complete_le;
+        }
+
+        public function setStatus($complete_le){
             $this->complete_le = $complete_le;
         }
     }

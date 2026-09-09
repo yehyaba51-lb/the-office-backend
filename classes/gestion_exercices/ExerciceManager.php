@@ -189,7 +189,7 @@
             $rows = $this->soumissionModel->getSoumissionsByEtudiant($etudiant_id);
             $allSoumission = [];
 
-            if(!$row){
+            if(!$rows){
                 return false;
             }
 
