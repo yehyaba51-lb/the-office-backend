@@ -80,19 +80,33 @@
 
 
         public function updateProgressionExercice($data){
-            $stmt = mysqli_prepare($this->conn, 
-                "UPDATE progression_exercice
-                SET statut = ?
-                WHERE etudiant_id = ?
-                AND exercice_id = ?"
-            );
+            if(isset($data['note'])){
+                $stmt = mysqli_prepare($this->conn, 
+                    "UPDATE progression_exercice
+                    SET note = ?
+                    WHERE etudiant_id = ?
+                    AND exercice_id = ?"
+                );
+
+                mysqli_stmt_bind_param($stmt, "dii", $data['note'], $data['etudiant_id'], $data['exercice_id']);
+
+            } else {
+                $stmt = mysqli_prepare($this->conn, 
+                    "UPDATE progression_exercice
+                    SET statut = ?
+                    WHERE etudiant_id = ?
+                    AND exercice_id = ?"
+                );
+
+                mysqli_stmt_bind_param($stmt, "sii", $data['statut'], $data['etudiant_id'], $data['exercice_id']);
+
+            }
 
             if (!$stmt) {
                 error_log('Prepare failed: ' . mysqli_error($this->conn));
                 return false;
             }
 
-            mysqli_stmt_bind_param($stmt, "sii", $data['statut'], $data['etudiant_id'], $data['exercice_id']);
             return mysqli_stmt_execute($stmt);
         }
     }
