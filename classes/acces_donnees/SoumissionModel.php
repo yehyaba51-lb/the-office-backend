@@ -60,6 +60,24 @@
         }
 
 
+        public function getSoumissionByEtudiantQuestion($etudiant_id, $question_id){
+            $stmt = mysqli_prepare($this->conn, 
+                "SELECT * FROM soumission WHERE etudiant_id = ? AND question_id = ?"
+            );
+
+            if(!$stmt){
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "ii", $etudiant_id, $question_id);
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+            return mysqli_fetch_assoc($result);
+        }
+
+
         public function creerSoumission($data){
             $stmt = mysqli_prepare($this->conn, 
             "INSERT INTO soumission(etudiant_id, question_id, soumission_reponse, url_fichier, soumis_le)
