@@ -48,11 +48,11 @@
         }
 
         public function getStatus(){
-            return $this->complete_le;
+            return $this->status;
         }
 
-        public function setStatus($complete_le){
-            $this->complete_le = $complete_le;
+        public function setStatus($status){
+            $this->status = $status;
         }
     }
 
