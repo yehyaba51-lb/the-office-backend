@@ -46,6 +46,7 @@ CREATE TABLE progression_lecon(
     etudiant_id INT NOT NULL,
     complete_le DATE,
     statut ENUM('en_cours', 'terminee') DEFAULT NULL,
+    note FLOAT,
     UNIQUE (etudiant_id, lecon_id, cours_id),
 
     FOREIGN KEY (lecon_id, cours_id) REFERENCES lecon (lecon_id, cours_id) ON DELETE CASCADE,
