@@ -152,5 +152,67 @@
         }
 
 
-        
+        public function marquerLeconTerminee($etudiant_id, $cours_id, $lecon_id){
+            $data_terminee = [
+                'statut' => 'terminee',
+                'complete_le' => date('Y-m-d'),
+                'etudiant_id' => $etudiant_id,
+                'cours_id' => $cours_id,
+                'lecon_id' => $lecon_id
+            ];
+            $this->progressionLeconModel->updateProgressionLecon($data_terminee);
+
+            $lecon = $this->leconModel->getLecon($lecon_id);
+            if(!$lecon){
+                return false;
+            }
+
+            $next_lecon = $this->leconModel->getLeconByOrdre($cours_id, $lecon['lecon_ordre'] + 1);
+            
+
+            if($next_lecon){
+                $data_en_cours = [
+                    'statut' => 'en_cours',
+                    'complete_le' => null,
+                    'etudiant_id' => $etudiant_id,
+                    'cours_id' => $cours_id,
+                    'lecon_id' => $next_lecon['lecon_id']
+                ];
+                $this->progressionLeconModel->updateProgressionLecon($data_en_cours);
+
+                $data_progression = [
+                    'complete_le' => null,
+                    'derniere_lecon_id' => $lecon['lecon_id'],
+                    'etudiant_id' => $etudiant_id,
+                    'cours_id' => $cours_id
+                ];
+
+                $this->progressionModel->updateProgression($data_progression);
+            } else {
+                $data_completee = [
+                    'complete_le' => date('Y-m-d'),
+                    'derniere_lecon_id' => $lecon['lecon_id'],
+                    'etudiant_id' => $etudiant_id,
+                    'cours_id' => $cours_id
+                ];
+
+                $this->progressionModel->updateProgression($data_completee);
+            }
+            
+            $allExercices = $this->exerciceModel->getExercicesByLecon($lecon_id, $cours_id);
+
+            if(!$allExercices){
+                return false;
+            }
+
+            foreach ($allExercices as $exercice) {
+                $data = [
+                    'statut' => 'a_faire',
+                    'etudiant_id' => $etudiant_id,
+                    'exercice_id' => $exercice['exercice_id']
+                ];
+
+                $this->progressionExerciceModel->updateProgressionExercice($data);
+            }
+        }
     }
