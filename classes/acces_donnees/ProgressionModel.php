@@ -52,15 +52,32 @@
             return mysqli_insert_id($this->conn);
         }
 
-        public function updateProgression($id, $data){
-            $stmt = mysqli_prepare($this->conn, "UPDATE progression SET etudiant_id = ?, cours_id = ?, complete_le = ?, derniere_lecon_id = ?, modifie_le = ? WHERE progression_id = ?");
+        public function updateProgression($data){
+            if($data['complete_le'] !== null){
+                $stmt = mysqli_prepare($this->conn,
+                    "UPDATE progression
+                    SET complete_le = ?, derniere_lecon_id = ?
+                    WHERE etudiant_id = ?
+                    AND cours_id = ?"
+                );
+                
+                mysqli_stmt_bind_param($stmt, "siii", $data['complete_le'], $data['derniere_lecon_id'], $data['etudiant_id'], $data['cours_id']);
+            } else {
+                $stmt = mysqli_prepare($this->conn,
+                    "UPDATE progression
+                    SET derniere_lecon_id = ?
+                    WHERE etudiant_id = ?
+                    AND cours_id = ?"
+                );
+
+                mysqli_stmt_bind_param($stmt, "iii", $data['derniere_lecon_id'], $data['etudiant_id'], $data['cours_id']);
+            }
 
             if (!$stmt) {
                 error_log('Prepare failed: ' . mysqli_error($this->conn));
                 return false;
             }
 
-            mysqli_stmt_bind_param($stmt, "iisisi", $data['etudiant_id'], $data['cours_id'], $data['complete_le'], $data['derniere_lecon_id'], $data['modifie_le'], $id);
             return mysqli_stmt_execute($stmt);
         }
     }
