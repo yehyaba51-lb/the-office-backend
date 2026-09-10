@@ -30,10 +30,10 @@
         }
 
         public function getOrdre(){
-            return $this->ordre;
+            return $this->lecon_ordre;
         }
 
-        public function setOrdre($ordre){
-            $this->ordre = $ordre;
+        public function setOrdre($lecon_ordre){
+            $this->lecon_ordre = $lecon_ordre;
         }
     }
