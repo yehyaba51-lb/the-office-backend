@@ -54,5 +54,71 @@
         }
 
 
+        public function initialiserProgressionLecons($etudiant_id, $cours_id){
+            $lecons_rows = $this->leconModel->getLeconsByCours($cours_id);
+
+            if(!$lecons_rows){
+                return false;
+            }
+
+            foreach ($lecons_rows as $lecon) {
+                if($lecon['lecon_ordre'] === 1){
+                    $data = [
+                        'etudiant_id' => $etudiant_id,
+                        'cours_id' => $cours_id,
+                        'lecon_id' => $lecon['lecon_id'],
+                        'complete_le' => null,
+                        'statut' => 'en_cours'
+                    ];
+                } else {
+                    $data = [
+                        'etudiant_id' => $etudiant_id,
+                        'cours_id' => $cours_id,
+                        'lecon_id' => $lecon['lecon_id'],
+                        'complete_le' => null,
+                        'statut' => null
+                    ];
+                }
+                $this->progressionLeconModel->creerProgressionLecon($data);
+            }
+            return true;
+        }
+
+
+        public function initialiserProgressionExercices($etudiant_id, $cours_id){
+            $lecons_rows = $this->leconModel->getLeconsByCours($cours_id);
+
+            if(!$lecons_rows){
+                return false;
+            }
+
+            foreach ($lecons_rows as $lecon) {
+                $exercices_rows = $this->exerciceModel->getExercicesByLecon($lecon['lecon_id'], $cours_id);
+
+                foreach ($exercice_rows as $exercice) {
+                    if($lecon['lecon_ordre'] === 1){
+                        $data = [
+                            'etudiant_id' => $etudiant_id,
+                            'exercice_id' => $exercice['exercice_id'],
+                            'statut' => 'a_faire',
+                            'complete_le' => null,
+                            'note' => null
+                        ];
+                    } else {
+                        $data = [
+                            'etudiant_id' => $etudiant_id,
+                            'exercice_id' => $exercice['exercice_id'],
+                            'statut' => null,
+                            'complete_le' => null,
+                            'note' => null
+                        ];
+                    }
+                    $this->progressionExerciceModel->creerProgressionExercice($data);
+                }
+            }
+            return true;
+        }
+
+
         
     }
