@@ -55,29 +55,48 @@
 
         }
 
-        public function creerLecon($data){
-            $stmt = mysqli_prepare($this->conn, "INSERT INTO lecon(cours_id, lecon_titre, lecon_order) VALUES(?, ?, ?)");
+        public function getLeconByOrdre($cours_id, $lecon_order){
+            $stmt = mysqli_prepare($this->conn, 
+                "SELECT *
+                FROM lecon
+                WHERE cours_id = ? AND lecon_order = ?"
+            );
 
             if (!$stmt) {
                 error_log('Prepare failed: ' . mysqli_error($this->conn));
                 return false;
             }
 
-            mysqli_stmt_bind_param($stmt, "isi", $data['cours_id'], $data['lecon_titre'], $data['lecon_order']);
+            mysqli_stmt_bind_param($stmt, "ii", $cours_id, $lecon_order);
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+            return mysqli_fetch_assoc($result);
+        }
+
+        public function creerLecon($data){
+            $stmt = mysqli_prepare($this->conn, "INSERT INTO lecon(cours_id, lecon_titre, lecon_ordre) VALUES(?, ?, ?)");
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "isi", $data['cours_id'], $data['lecon_titre'], $data['lecon_ordre']);
             mysqli_stmt_execute($stmt);
 
             return mysqli_insert_id($this->conn);
         }
 
         public function updateLecon($id, $data){
-            $stmt = mysqli_prepare($this->conn, "UPDATE lecon SET lecon_titre = ?, lecon_order = ? WHERE lecon_id = ?");
+            $stmt = mysqli_prepare($this->conn, "UPDATE lecon SET lecon_titre = ?, lecon_ordre = ? WHERE lecon_id = ?");
 
             if (!$stmt) {
                 error_log('Prepare failed: ' . mysqli_error($this->conn));
                 return false;
             }
 
-            mysqli_stmt_bind_param($stmt, "sii", $data['lecon_titre'], $data['lecon_order'], $id);
+            mysqli_stmt_bind_param($stmt, "sii", $data['lecon_titre'], $data['lecon_ordre'], $id);
             return mysqli_stmt_execute($stmt);
         }
 
