@@ -120,5 +120,37 @@
         }
 
 
+        public function getExercicesAvecStatut($etudiant_id, $cours_id){
+            $lecons_rows = $this->leconModel->getLeconsByCours($cours_id);
+            
+            $results = [];
+
+
+            if(!$lecons_rows){
+                return false;
+            }
+
+            foreach ($lecons_rows as $lecon) {
+                $exercices_rows = $this->exerciceModel->getExercicesByLecon($lecon['lecon_id'], $cours_id);
+                $exercice_avec_statut = [];
+
+                foreach ($exercices_rows as $exercice) {
+                    $progression_exercice_row = $this->progressionExerciceModel->getProgressionByExerciceEtudiant($etudiant_id, $exercice['exercice_id']);
+
+                    if(!$progression_exercice_row){
+                        $exercice['statut'] = null;
+                    } else {
+                        $exercice['statut'] = $progression_exercice_row['statut'];
+                        $exercice['note'] = $progression_exercice_row['note'];
+                    }
+                    $exercice_avec_statut[] = $exercice;
+                }
+                $lecon['exercices'] = $exercice_avec_statut;
+                $results[] = $lecon;
+            }
+            return $results;
+        }
+
+
         
     }
