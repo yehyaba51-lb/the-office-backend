@@ -60,4 +60,14 @@
                 return $moy;
             }
         }
+
+
+        public function getMoyenneExercice($exercice_id, $etudiant_id){
+            $row = $this->progressionExerciceModel->getProgressionByExerciceEtudiant($etudiant_id, $exercice_id);
+            
+            if(!$row){
+                return false;
+            }
+            return $row['note'];
+        }
     }
