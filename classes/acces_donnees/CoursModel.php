@@ -35,7 +35,18 @@ class CoursModel
 
     public function getAllCours()
     {
-        $query = "SELECT * FROM cours";
+        $query = "SELECT
+                    co.cours_id AS id,
+                    co.cours_titre AS titre,
+                    co.description,
+                    ca.categorie_nom AS categorie,
+                    CONCAT(u.prenom, ' ', u.nom) AS formateur,
+                    (SELECT COUNT(*) FROM lecon AS l WHERE l.cours_id = co.cours_id) AS lecons
+                FROM cours AS co
+                LEFT JOIN categorie AS ca
+                ON co.categorie_id = ca.categorie_id
+                LEFT JOIN utilisateur AS u
+                ON co.formateur_id = u.utilisateur_id";
 
         $result = mysqli_query($this->conn, $query);
 
