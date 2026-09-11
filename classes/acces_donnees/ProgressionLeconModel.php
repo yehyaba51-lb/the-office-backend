@@ -78,21 +78,34 @@
         }
 
         public function updateProgressionLecon($data){
-            $stmt = mysqli_prepare($this->conn, 
-                "UPDATE progression_lecon
-                SET statut = ?,
-                complete_le = ?
-                WHERE etudiant_id = ?
-                AND cours_id = ?
-                AND lecon_id = ?"
-            );
+            if(isset($data['note'])){
+                $stmt = mysqli_prepare($this->conn, 
+                    "UPDATE progression_lecon
+                    SET note = ?
+                    WHERE etudiant_id = ?
+                    AND cours_id = ?
+                    AND lecon_id = ?"
+                );
+
+                mysqli_stmt_bind_param($stmt, "diii", $data['note'], $data['etudiant_id'], $data['cours_id'], $data['lecon_id']);
+            } else {
+                $stmt = mysqli_prepare($this->conn, 
+                    "UPDATE progression_lecon
+                    SET statut = ?,
+                    complete_le = ?
+                    WHERE etudiant_id = ?
+                    AND cours_id = ?
+                    AND lecon_id = ?"
+                );
+
+                mysqli_stmt_bind_param($stmt, "ssiii", $data['statut'], $data['complete_le'], $data['etudiant_id'], $data['cours_id'], $data['lecon_id']);
+            }
 
             if(!$stmt){
                 error_log('Prepare failed' . mysqli_error($this->conn));
                 return false;
             }
 
-            mysqli_stmt_bind_param($stmt, "ssiii", $data['statut'], $data['complete_le'], $data['etudiant_id'], $data['cours_id'], $data['lecon_id']);
             return mysqli_stmt_execute($stmt);
         }
     }
