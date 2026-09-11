@@ -12,7 +12,7 @@ require_once('Lecon.php');
 require_once('LeconTexte.php');
 require_once('LeconPdf.php');
 require_once('LeconVideo.php');
-require_once('Etudiant.php');
+require_once(__DIR__ . '/../authentification/Etudiant.php');
 require_once('Inscription.php');
 require_once('Categorie.php');
 
@@ -84,21 +84,12 @@ class CoursManager
     public function getAllCours()
     {
         $rows = $this->coursModel->getAllCours();
-        $allCours = [];
-
-        foreach ($rows as $row) {
-            $cours = new Cours();
-            $cours->setCoursId($row['cours_id']);
-            $cours->setTitre($row['cours_titre']);
-            $cours->setDescription($row['description']);
-            $cours->setFormateurId($row['formateur_id']);
-            $cours->setCategorieId($row['categorie_id']);
-            $cours->setCreeLe($row['cree_le']);
-            $cours->setUrlImage($row['url_image']);
-
-            $allCours[] = $cours;
+            
+        if(!$rows){
+            return false;
         }
-        return $allCours;
+
+        return $rows;
     }
 
 
@@ -280,6 +271,16 @@ class CoursManager
     }
 
 
+    public function getAllInscriptions(){
+        $rows = $this->inscriptionModel->getAllInscriptions();
+
+        if(!$rows){
+            return false;
+        }
+
+        return $rows;
+    }
+
     public function createInscription($etudiant_id, $cours_id)
     {
         $data = [
@@ -305,16 +306,12 @@ class CoursManager
     public function getCategories()
     {
         $rows = $this->categorieModel->getAllCategories();
-        $allCategories = [];
-
-        foreach ($rows as $row) {
-            $categorie = new Categorie();
-            $categorie->setCategorieId($row['categorie_id']);
-            $categorie->setCategorieNom($row['categorie_nom']);
-
-            $allCategories[] = $categorie;
+        
+        if(!$rows){
+            return false;
         }
-        return $allCategories;
+
+        return $rows;
     }
 
 
