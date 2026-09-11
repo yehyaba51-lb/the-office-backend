@@ -25,6 +25,28 @@
             return mysqli_fetch_assoc($result);
         }
 
+
+        public function getProgressionPerEtudiant($etudiant_id, $cours_id){
+            $stmt = mysqli_prepare($this->conn,
+                "SELECT *
+                FROM progression
+                WHERE etudiant_id = ?
+                AND cours_id = ?
+                AND lecon_id = ?"
+            );
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+            mysqli_stmt_bind_param($stmt, "ii", $etudiant_id, $cours_id);
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            return mysqli_fetch_assoc($result);
+        }
+
         public function getAllProgressions(){
             $query = "SELECT * FROM progression";
 
@@ -53,7 +75,17 @@
         }
 
         public function updateProgression($data){
-            if($data['complete_le'] !== null){
+            if(isset($data['note_finale'])){
+                $stmt = mysqli_prepare($this->conn,
+                    "UPDATE progression
+                    SET note_finale = ?
+                    WHERE etudiant_id = ?
+                    AND cours_id = ?"
+                );
+
+                mysqli_stmt_bind_param($stmt, "dii", $data['note_finale'], $data['etudiant_id'], $data['cours_id']);
+
+            } else if($data['complete_le'] !== null){
                 $stmt = mysqli_prepare($this->conn,
                     "UPDATE progression
                     SET complete_le = ?, derniere_lecon_id = ?
