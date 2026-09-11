@@ -53,19 +53,6 @@ CREATE TABLE progression_lecon(
     FOREIGN KEY (etudiant_id) REFERENCES utilisateur (utilisateur_id) ON DELETE CASCADE
 );
 
-CREATE TABLE progression_exercice(
-    progression_exercice_id INT PRIMARY KEY AUTO_INCREMENT,
-    etudiant_id INT NOT NULL,
-    exercice_id INT NOT NULL,
-    complete_le DATE,
-    statut ENUM('a_faire', 'soumis', 'termine') DEFAULT NULL,
-    note FLOAT,
-    UNIQUE (etudiant_id, exercice_id),
-
-    FOREIGN KEY (etudiant_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE,
-    FOREIGN KEY (exercice_id) REFERENCES exercice(exercice_id) ON DELETE CASCADE
-);
-
 CREATE TABLE lecon_pdf(
     pdf_id INT PRIMARY KEY AUTO_INCREMENT,
     lecon_id INT NOT NULL,
@@ -103,7 +90,7 @@ CREATE TABLE progression(
     cours_id INT NOT NULL,
     complete_le DATE,
     derniere_lecon_id INT,
-    modifie_le TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP,
+    modifie_le DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE (etudiant_id, cours_id),
 
     FOREIGN KEY (etudiant_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE,
@@ -130,6 +117,19 @@ CREATE TABLE exercice(
 
     FOREIGN KEY (lecon_id, cours_id) REFERENCES lecon(lecon_id, cours_id) ON DELETE CASCADE
 
+);
+
+CREATE TABLE progression_exercice(
+    progression_exercice_id INT PRIMARY KEY AUTO_INCREMENT,
+    etudiant_id INT NOT NULL,
+    exercice_id INT NOT NULL,
+    complete_le DATE,
+    statut ENUM('a_faire', 'soumis', 'termine') DEFAULT NULL,
+    note FLOAT,
+    UNIQUE (etudiant_id, exercice_id),
+
+    FOREIGN KEY (etudiant_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE,
+    FOREIGN KEY (exercice_id) REFERENCES exercice(exercice_id) ON DELETE CASCADE
 );
 
 CREATE TABLE question(
