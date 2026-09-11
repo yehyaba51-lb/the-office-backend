@@ -26,7 +26,11 @@
         }
 
         public function getAllCategories(){
-            $query = "SELECT * FROM categorie";
+            $query = "SELECT 
+                        cat.categorie_id AS id,
+                        cat.categorie_nom AS nom,
+                        (SELECT COUNT(*) FROM cours AS co WHERE co.categorie_id = cat.categorie_id) AS cours
+                    FROM categorie AS cat";
 
             $result = mysqli_query($this->conn, $query);
 
