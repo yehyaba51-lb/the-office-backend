@@ -26,7 +26,16 @@
         }
 
         public function getAllInscriptions(){
-            $query = "SELECT * FROM inscription";
+            $query = "SELECT 
+                        i.inscription_id AS id,
+                        i.inscrit_le,
+                        CONCAT(u.prenom, ' ', u.nom) as etudiant,
+                        c.cours_titre AS cours
+                    FROM inscription AS i
+                    INNER JOIN cours AS c
+                    ON i.cours_id = c.cours_id
+                    INNER JOIN utilisateur AS u
+                    ON i.etudiant_id = u.utilisateur_id";
 
             $result = mysqli_query($this->conn, $query);
 
