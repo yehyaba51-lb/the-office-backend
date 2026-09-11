@@ -19,11 +19,9 @@
             exit;
         }
 
-        
-
         http_response_code(200);
         echo json_encode($allCategories);
     } else {
-        http_response_code(405); // Method Not Allowed
+        http_response_code(405);
         echo json_encode(['error' => 'Méthode non autorisée']);
     }
