@@ -57,13 +57,38 @@
             return mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
 
+        public function genererMotDePasse($longueur = 12){
+            $caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            $mot_de_passe = '';
+
+            for($i = 0; $i < $longueur; $i++){
+                $mot_de_passe .= $caracteres[random_int(0, strlen($caracteres) - 1)];
+            }
+
+            return $mot_de_passe;
+        }
+    
         public function creerUtilisateur($data)
         {
-            if(!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
+            if(empty($data['prenom']) || strlen(trim($data['prenom'])) < 2 || !preg_match('/^[A-Z][a-zA-Z ]*$/', $data['prenom'])){
+                return false;
+            }
+
+            if(empty($data['nom']) || strlen(trim($data['nom'])) < 2 || !preg_match('/^[A-Z][a-zA-Z ]*$/', $data['nom'])){
+                return false;
+            }
+
+            if(empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
                 return false;
             };
 
-            $mot_de_passe_hash = password_hash($data['mot_de_passe'], PASSWORD_DEFAULT);
+            if(!$data['role'] || $data['role'] === ""){
+                return false;
+            }
+
+            $mot_de_passe = $this->genererMotDePasse();
+            
+            $mot_de_passe_hash = password_hash($mot_de_passe, PASSWORD_DEFAULT);
 
             $stmt = mysqli_prepare($this->conn, "INSERT INTO utilisateur(prenom, nom, email, mot_de_passe, role) VALUES(?, ?, ?, ?, ?)");
             
@@ -75,8 +100,10 @@
             mysqli_stmt_bind_param($stmt, 'sssss', $data['prenom'], $data['nom'], $data['email'], $mot_de_passe_hash, $data['role']);
             mysqli_stmt_execute($stmt);
 
-            return mysqli_insert_id($this->conn);
-
+            return [
+                'id' => mysqli_insert_id($this->conn),
+                'mot_de_passe' => $mot_de_passe
+            ];
         }
 
         public function updateUtilisateur($id, $data){
@@ -90,6 +117,30 @@
             mysqli_stmt_bind_param($stmt, "sssi", $data['prenom'], $data['nom'], $data['email'], $id);
             return mysqli_stmt_execute($stmt);
             
+        }
+
+        public function reinitialiserMotDePasse($id){
+            $mot_de_passe = $this->genererMotDePasse();
+            $mot_de_passe_hash = password_hash($mot_de_passe, PASSWORD_DEFAULT);
+
+            $stmt = mysqli_prepare($this->conn, 
+                "UPDATE utilisateur
+                SET mot_de_passe = ?
+                WHERE utilisateur_id = ?"
+            );
+
+            if(!$stmt){
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "si", $mot_de_passe_hash, $id);
+            mysqli_stmt_execute($stmt);
+
+            return [
+                'id' => mysqli_insert_id($this->conn),
+                'mot_de_passe' => $mot_de_passe
+            ];
         }
 
         public function supprimerUtilisateur($id){
