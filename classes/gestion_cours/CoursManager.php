@@ -285,11 +285,14 @@ class CoursManager
     {
         $data = [
             'etudiant_id' => $etudiant_id,
-            'cours_id' => $cours_id,
-            'note_finale' => null
+            'cours_id' => $cours_id
         ];
 
         return $this->inscriptionModel->creerInscription($data);
+    }
+
+    public function supprimerInscription($id){
+        return $this->inscriptionModel->supprimerInscription($id);
     }
 
 
