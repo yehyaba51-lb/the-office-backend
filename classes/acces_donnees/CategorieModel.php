@@ -43,6 +43,10 @@
         }
 
         public function creerCategorie($data){
+            if(empty($data['categorie_nom']) || strlen(trim($data['categorie_nom'])) < 2){
+                return false;
+            }
+
             $stmt = mysqli_prepare($this->conn, "INSERT INTO categorie(categorie_nom) VALUES(?)");
 
             if (!$stmt) {
