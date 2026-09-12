@@ -48,14 +48,14 @@
         }
 
         public function creerInscription($data){
-            $stmt = mysqli_prepare($this->conn, "INSERT INTO inscription(etudiant_id, cours_id, note_finale) VALUES(?, ?, ?)");
+            $stmt = mysqli_prepare($this->conn, "INSERT INTO inscription(etudiant_id, cours_id, note_finale) VALUES(?, ?, null)");
 
             if (!$stmt) {
                 error_log('Prepare failed: ' . mysqli_error($this->conn));
                 return false;
             }
 
-            mysqli_stmt_bind_param($stmt, "iid", $data['etudiant_id'], $data['cours_id'], $data['note_finale']);
+            mysqli_stmt_bind_param($stmt, "ii", $data['etudiant_id'], $data['cours_id']);
             mysqli_stmt_execute($stmt);
 
             return mysqli_insert_id($this->conn);
