@@ -6,6 +6,7 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Headers: Content-Type');
     header('Content-Type: application/json');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 
     require_once(__DIR__ . '/../classes/gestion_cours/CoursManager.php');
 
@@ -39,7 +40,40 @@
         http_response_code(201);
         echo json_encode(['id' => $id]);
     } else if($_SERVER['REQUEST_METHOD'] === 'PUT'){
+        if(!isset($_GET['id'])){
+            http_response_code(400);
+            echo json_encode(['error' => 'Id manquant']);
+            exit;
+        } else {
+            $data = json_decode(file_get_contents("php://input"), true);
 
+            $update = $manager->updateCategorie($_GET['id'], $data['categorie_nom']);
+
+            if(!$update){
+                http_response_code(400);
+                echo json_encode(['error' => 'Impossible de modifier la categorie']);
+                exit;
+            }
+
+            http_response_code(200);
+            echo json_encode($update);
+        }
+    } else if($_SERVER['REQUEST_METHOD'] === 'DELETE'){
+        if(!isset($_GET['id'])){
+            http_response_code(400);
+            echo json_encode(['error' => 'Id manquant']);
+            exit;
+        } else {
+            $delete = $manager->supprimerCategorie($_GET['id']);
+
+            if(!$delete){
+                http_response_code(400);
+                echo json_encode(['error' => 'Impossible de supprimer la categorie']);
+                exit;
+            }
+            http_response_code(200);
+            echo json_encode($delete);
+        }
     } else {
         http_response_code(405);
         echo json_encode(['error' => 'Méthode non autorisée']);
