@@ -57,6 +57,10 @@
             return $this->model->updateUtilisateur($id, $data);
         }
 
+        public function reinitialiserMotDePasse($id){
+            return $this->model->reinitialiserMotDePasse($id);
+        }
+
         public function supprimerUtilisateur($id){
             return $this->model->supprimerUtilisateur($id);
         }
