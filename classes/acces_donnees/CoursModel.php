@@ -138,6 +138,16 @@ class CoursModel
 
     public function creerCours($data)
     {
+        if(empty($data['cours_titre']) || strlen(trim($data['cours_titre'])) < 2 || !preg_match('/^[A-Z][a-zA-Z ]*$/', $data['cours_titre'])){
+            return false;
+        }
+        if(empty($data['formateur_id']) || $data['formateur_id'] === ""){
+            return false;
+        }
+        if(empty($data['categorie_id']) || $data['categorie_id'] === ""){
+            return false;
+        }
+
         $stmt = mysqli_prepare($this->conn, "INSERT INTO cours(cours_titre, formateur_id, categorie_id) VALUES(?, ?, ?)");
 
         if (!$stmt) {
