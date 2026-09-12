@@ -82,7 +82,7 @@
                 return false;
             };
 
-            if(!$data['role'] || $data['role'] === ""){
+            if(empty($data['role']) || $data['role'] === ""){
                 return false;
             }
 
