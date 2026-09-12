@@ -28,7 +28,7 @@
         public function getAllCategories(){
             $query = "SELECT 
                         cat.categorie_id AS id,
-                        cat.categorie_nom AS nom,
+                        cat.categorie_nom,
                         (SELECT COUNT(*) FROM cours AS co WHERE co.categorie_id = cat.categorie_id) AS cours
                     FROM categorie AS cat";
 
@@ -61,6 +61,10 @@
         }
 
         public function updateCategorie($id, $data){
+            if(empty($data['categorie_nom']) || strlen(trim($data['categorie_nom'])) < 2){
+                return false;
+            }
+
             $stmt = mysqli_prepare($this->conn, "UPDATE categorie SET categorie_nom = ? WHERE categorie_id = ?");
 
             if (!$stmt) {
