@@ -140,6 +140,9 @@
 
 
         public function creerSoumissionText($data){
+            if(empty($data['soumission_reponse']) || !preg_match("/^[a-zA-ZÀ-ÿ0-9' :\-]+$/", $data['soumission_reponse'])){
+                return ['error' => 'Soumission invalide ou pas rempli'];
+            }
             $stmt = mysqli_prepare($this->conn, 
                 "INSERT INTO soumission(etudiant_id, question_id, soumission_reponse, soumis_le)
                 VALUES(?, ?, ?, NOW())"
