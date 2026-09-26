@@ -124,6 +124,26 @@
             return $rows;
         }
 
+        public function getQuestionsPerLecon($cours_id, $lecon_id){
+            $questionsPerLecon = $this->questionModel->getQuestionsPerLecon($cours_id, $lecon_id);
+
+            if($questionsPerLecon === false){
+                return false;
+            }
+
+            return $questionsPerLecon;
+        }
+
+        public function getChoixPerLecon($cours_id, $lecon_id){
+            $choixPerLecon = $this->choixModel->getChoixPerLecon($cours_id, $lecon_id);
+
+            if($choixPerLecon === false){
+                return false;
+            }
+
+            return $choixPerLecon;
+        }
+
         public function creerQuestion($data){
             $question_data = [
                 'exercice_id' => $data['exercice_id'],
@@ -309,15 +329,24 @@
             ];
         }
 
-        public function creerSoumission($etudiant_id, $question_id, $soumission_reponse, $url_fichier){
+        public function creerSoumissionText($etudiant_id, $question_id, $soumission_reponse){
             $data = [
                 'etudiant_id' => $etudiant_id,
                 'question_id' => $question_id,
-                'soumission_reponse' => $soumission_reponse,
-                'url_fichier' => $url_fichier
+                'soumission_reponse' => $soumission_reponse
             ];
 
-            return $this->soumissionModel->creerSoumission($data);
+            return $this->soumissionModel->creerSoumissionText($data);
+        }
+
+        public function creerSoumissionFile($etudiant_id, $question_id, $soumission_reponse){
+            $data = [
+                'etudiant_id' => $etudiant_id,
+                'question_id' => $question_id,
+                'soumission_reponse' => $soumission_reponse
+            ];
+
+            return $this->soumissionModel->creerSoumissionFile($data);
         }
 
         public function corrigerSoumission($soumission_id, $formateur_id, $note, $commentaire){
