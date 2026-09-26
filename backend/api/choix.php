@@ -43,6 +43,23 @@
     
                     http_response_code(200);
                     echo json_encode($choixExercice);
+                } else if(isset($_GET['allExercices'])){
+                    if(!$auth->verifierRole('Etudiant') ){
+                        http_response_code(403);
+                        echo json_encode(['error' => 'Accès refusé']);
+                        exit;
+                    }
+
+                    $allQuestionsPerExercice = $manager->getChoixPerLecon($_GET['id'], $_GET['leconId']);
+
+                    if($allQuestionsPerExercice === false){
+                        http_response_code(500);
+                        echo json_encode(['error' => 'Erreur serveur']);
+                        exit;
+                    }
+
+                    http_response_code(200);
+                    echo json_encode($allQuestionsPerExercice);
                 } else {
                     if(!$auth->verifierRole('Formateur')){
                         http_response_code(403);
