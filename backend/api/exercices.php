@@ -66,7 +66,7 @@
     } else if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if(!isset($_GET['coursId'])){
             http_response_code(400);
-            echo json_encode(['error' => 'Id cours manquante']);
+            echo json_encode(['error' => 'Id cours manquant']);
             exit;
         } else {
             if(!isset($_GET['leconId'])){
