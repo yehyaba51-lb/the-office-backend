@@ -139,17 +139,39 @@
         }
 
 
-        public function creerSoumission($data){
+        public function creerSoumissionText($data){
             $stmt = mysqli_prepare($this->conn, 
-            "INSERT INTO soumission(etudiant_id, question_id, soumission_reponse, url_fichier, soumis_le)
-            VALUES(?, ?, ?, ?, ?)");
+                "INSERT INTO soumission(etudiant_id, question_id, soumission_reponse, soumis_le)
+                VALUES(?, ?, ?, NOW())"
+            );
 
             if (!$stmt) {
                 error_log('Prepare failed: ' . mysqli_error($this->conn));
                 return false;
             }
 
-            mysqli_stmt_bind_param($stmt, "iisss", $data['etudiant_id'], $data['question_id'], $data['soumission_reponse'], $data['url_fichier'], $data['soumis_le']);
+            mysqli_stmt_bind_param($stmt, "iis", $data['etudiant_id'], $data['question_id'], $data['soumission_reponse']);
+            $execute = mysqli_stmt_execute($stmt);
+
+            if(!$execute){
+                return false;
+            }
+
+            return mysqli_insert_id($this->conn);
+        }
+
+        public function creerSoumissionFile($data){
+            $stmt = mysqli_prepare($this->conn, 
+                "INSERT INTO soumission(etudiant_id, question_id, url_fichier, soumis_le)
+                VALUES(?, ?, ?, NOW())"
+            );
+
+            if (!$stmt) {
+                error_log('Prepare failed: ' . mysqli_error($this->conn));
+                return false;
+            }
+
+            mysqli_stmt_bind_param($stmt, "iis", $data['etudiant_id'], $data['question_id'], $data['soumission_reponse']);
             $execute = mysqli_stmt_execute($stmt);
 
             if(!$execute){
